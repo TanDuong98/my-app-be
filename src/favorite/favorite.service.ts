@@ -10,15 +10,33 @@ export class FavoriteService {
     @InjectRepository(Favorite)
     private repo: Repository<Favorite>,
   ) {}
-  create(createFavoriteDto: CreateFavoriteDto) {
-    return this.repo.save(createFavoriteDto);
+  async create(dto: CreateFavoriteDto) {
+    return this.repo.save(dto);
+  }
+
+  async saveAll(lstDto: CreateFavoriteDto[]) {
+    for (let i = 0; i < lstDto.length; i++) {
+      const a = await this.repo.find({
+        where: {
+          userNo: lstDto[i].userNo,
+          files: lstDto[i].files,
+        },
+      });
+      if (!a.length) this.repo.save(lstDto[i]);
+    }
+    return { result: 'OK' };
   }
 
   findAll(userNo: string) {
     return this.repo.find({ where: { userNo } });
   }
-
-  remove(rowpointer: string) {
-    return this.repo.delete(rowpointer);
+  async delete(dto: { userNo: string; files: string }) {
+    const a = await this.repo.find({
+      where: {
+        userNo: dto.userNo,
+        files: dto.files,
+      },
+    });
+    return this.repo.delete(a[0].id);
   }
 }

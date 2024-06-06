@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('favorite')
-export class Favorite {
+@Entity('user')
+export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -9,5 +9,5 @@ export class Favorite {
   userNo: string;
 
   @Column()
-  files: string;
+  password: string;
 }

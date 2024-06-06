@@ -1,23 +1,31 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { FavoriteService } from './favorite.service';
 import { CreateFavoriteDto } from './dto/create-favorite.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('favorite')
+@ApiTags('Favorite')
+@Controller()
 export class FavoriteController {
   constructor(private readonly favoriteService: FavoriteService) {}
 
   @Post()
-  create(@Body() createFavoriteDto: CreateFavoriteDto) {
-    return this.favoriteService.create(createFavoriteDto);
+  create(@Body() dto: CreateFavoriteDto) {
+    return this.favoriteService.create(dto);
   }
 
-  @Get()
-  findByUser(no: string) {
-    return this.favoriteService.findAll(no);
+  @Post('saveAll')
+  saveAll(@Body() lstDto: CreateFavoriteDto[]) {
+    console.log(lstDto);
+    return this.favoriteService.saveAll(lstDto);
   }
 
-  @Delete(':rowpointer')
-  remove(@Param('rowpointer') rowpointer: string) {
-    return this.favoriteService.remove(rowpointer);
+  @Get('/:userNo')
+  findByUser(@Param('userNo') userNo: string) {
+    return this.favoriteService.findAll(userNo);
+  }
+
+  @Post('remove')
+  delete(@Body() dto: { userNo: string; files: string }) {
+    return this.favoriteService.delete(dto);
   }
 }
